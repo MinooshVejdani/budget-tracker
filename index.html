@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Budget Tracker</title>
+</head>
+<body>
+    <h1>My Budget Tracker</h1>
+    <form class = "container">
+        <select id ="category" required>
+            <option>--select category--</option>
+            <option>Grocery</option>
+            <option>Clothes</option>
+            <option>Car Loan</option>
+            <option>Mortgage</option>
+            <option>Cosmetics</option>
+            <option>Travel</option>
+            <option>Gifts</option>
+            <option>Commute</option>
+            <option>utilities</option>
+            <option>mobile & data</option>
+        </select>
+        <input type="number" id ="amount" placeholder="amount" required>
+        <input type="date" id = "date"required>
+        <button type="submit">Add Expense</button>
+    </form>
+    
+    <section class = "expense-list"></section>
+</body>
+</html>
