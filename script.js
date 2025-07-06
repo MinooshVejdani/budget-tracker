@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
   const amount = document.getElementById("amount");
   const date = document.getElementById("date");
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const formData = document.querySelector(".form-data");
 
   let expenses = [];
-  
 
   formData.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -40,8 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
     "Restaurant",
   ];
 
-  
-
   //******************* Data handler functions *******************/
 
   const addExpense = function () {
@@ -52,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
       date: date.value,
       category: category.value,
     };
-    
+
     expenses.push(expense);
     saveExpenses();
     console.log(expenses);
@@ -118,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const filterMonthlyExpenses = function (month) {
     let monthExpenses = [];
     for (let i = 0; i < expenses.length; i++) {
-      const expMonth = new Date(expenses[i].date).getMonth() + 1;
+      const expMonth = new Date(expenses[i].date + "T12:00:00").getMonth() + 1;
 
       if (expMonth === month) {
         monthExpenses.push(expenses[i]);
@@ -152,16 +148,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     removeButton.addEventListener("click", () => {
-      console.log('Removing expense with ID:', expense.id);
+      console.log("Removing expense with ID:", expense.id);
       removeExpense(expense.id);
       displayExpensesUI();
       displayTotalByCategory(Number(monthSelect.value));
     });
   };
 
-
   const displayExpensesUI = function (array = expenses) {
-
     expensesContainer.innerHTML = "";
     array.forEach((exp) => {
       const expenseDiv = document.createElement("div");
@@ -254,13 +248,13 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   };
 
-      const loadExpenses = function () {
+  const loadExpenses = function () {
     console.log("Loading expenses...");
     const storedExpenses = localStorage.getItem("expenses");
-    if(storedExpenses) {
+    if (storedExpenses) {
       expenses = JSON.parse(storedExpenses);
-    } 
-  }
+    }
+  };
 
   const expenseCategorySelect = createCategorySelect();
   expenseCategorySelect.id = "category";
@@ -270,5 +264,4 @@ document.addEventListener("DOMContentLoaded", function () {
   displayExpensesUI();
   displayTotalByCategory(Number(monthSelect.value));
   displayMonthlyTotal(getMonthlyTotal());
-
 });
