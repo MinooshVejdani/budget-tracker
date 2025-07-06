@@ -1,0 +1,27 @@
+.totals-section {
+  display: flex;
+  flex-direction: row;
+  width: 800px;
+  height: 200px;
+    margin-top: 50px;
+}
+
+.category-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.categoryItem {
+  display: flex;
+  width: 100px;
+  height: 50px;
+  background-color: #f0f0f0;
+}
+
+.total-amount {
+  display: flex;
+  width: 100px;
+  height: 50px;
+  background-color: #f0f0f0;
+  width: 100px;
+}

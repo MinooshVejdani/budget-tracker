@@ -1,59 +1,73 @@
+
 document.addEventListener("DOMContentLoaded", function () {
   const amount = document.getElementById("amount");
   const date = document.getElementById("date");
-  const category = document.getElementById("category");
+  const categoryContainer = document.getElementById("category-container");
   const expensesContainer = document.querySelector(".expenses-container");
+  const totalsSection = document.querySelector(".totals-section");
   const monthSelect = document.getElementById("month-select");
+  const monthlyTotalAmount = document.getElementById("monthly-total-amount");
 
   const currentMonth = new Date().getMonth() + 1;
-  // monthSelect.value = currentMonth.toString();
+  monthSelect.value = currentMonth.toString();
 
   const formData = document.querySelector(".form-data");
-  console.log(formData);
-  formData.addEventListener("submit", (event) => {
-    event.preventDefault();
-    console.log("Form submitted!");
-    addExpense();
-    displayExpensesUI();
-    console.log(monthSelect.value); //June = '6'
-    getTotalByCategory(Number(monthSelect.value));
-    
-  });
-
-  let categories = ['Grocery', 'Clothes', 'Car Loan', 'Mortgage', 'Cosmetics', 'Travel', 'Gifts', 'Commute', 'utilities', 'mobile & data'];
 
   let expenses = [];
+  
 
-  //Data handler functions
+  formData.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    addExpense();
+    displayExpensesUI();
+    displayTotalByCategory(Number(monthSelect.value));
+    displayMonthlyTotal(getMonthlyTotal());
+    formData.reset();
+  });
+
+  let categories = [
+    "Grocery",
+    "Clothes",
+    "Car Loan",
+    "Mortgage",
+    "Cosmetics",
+    "Travel",
+    "Gifts",
+    "Commute",
+    "utilities",
+    "mobile & data",
+    "Restaurant",
+  ];
+
+  
+
+  //******************* Data handler functions *******************/
+
   const addExpense = function () {
-  const expense = {
-    id: Date.now() + Math.floor(Math.random() * 1000),
-    amount: parseFloat(amount.value),
-    date: date.value,
-    category: category.value,
-  };
-
+    const category = document.getElementById("category");
+    const expense = {
+      id: Date.now() + Math.floor(Math.random() * 1000),
+      amount: parseFloat(amount.value),
+      date: date.value,
+      category: category.value,
+    };
+    
     expenses.push(expense);
+    saveExpenses();
     console.log(expenses);
     return expenses;
   };
 
-  const editExpense = function (id) {
+  const editExpenseData = function (id, amount, date, category) {
     const index = expenses.findIndex((exp) => exp.id === id);
-    if (index !== -1) {
-      if (
-        expenses[index].amount !== amount.value ||
-        expenses[index].date !== date.value ||
-        expenses[index].category !== category.value
-      ) {
-        expenses[index] = {
-          id: id,
-          amount: amount.value,
-          date: date.value,
-          category: category.value,
-        };
-      }
-    }
+    expenses[index] = {
+      id: id,
+      amount: amount.value,
+      date: date.value,
+      category: category.value,
+    };
+    saveExpenses();
   };
 
   const removeExpense = function (id) {
@@ -61,53 +75,40 @@ document.addEventListener("DOMContentLoaded", function () {
     if (index !== -1) {
       expenses.splice(index, 1);
     }
+    displayExpensesUI();
+    displayTotalByCategory(Number(monthSelect.value));
+    displayMonthlyTotal(getMonthlyTotal());
+    saveExpenses();
   };
 
-  // const getTotalByCategory = function (month, category) {
-  //   let total = 0;
-  //   for (let i = 0; i < expenses.length; i++) {
-  //     const dateObj = new Date(expenses[i].date);
-  //     const expMonth = dateObj.getMonth();
-
-  //     if (expMonth === month && expenses[i].category === category) {
-  //       total += Number(expenses[i].amount);
-  //     }
-  //   }
-  //   return total;
-  // };
-
-   const getTotalByCategory = function (month) {
-    
+  const getTotalByCategory = function (month) {
     let totalOfCategories = [];
 
     categories.forEach((cat) => {
       let total = 0;
 
       for (let i = 0; i < expenses.length; i++) {
-      const dateObj = new Date(expenses[i].date);
-      const expMonth = dateObj.getMonth() + 1;
+        const expMonth = new Date(expenses[i].date).getMonth() + 1;
 
-      console.log(expMonth);
-      if (expMonth === month && expenses[i].category === cat) {
-        total += Number(expenses[i].amount);
-      }}
+        if (expMonth === month && expenses[i].category === cat) {
+          total += Number(expenses[i].amount);
+        }
+      }
       totalOfCategories.push({
         category: cat,
         total: total,
       });
     });
-  console.log(totalOfCategories);
     return totalOfCategories;
   };
 
-
-  const getMonthlyTotal = function (month) {
+  const getMonthlyTotal = function () {
     let total = 0;
     for (let i = 0; i < expenses.length; i++) {
-      const dateObj = new Date(expenses[i].date);
-      const expMonth = dateObj.getMonth();
-
-      if (expMonth === month) {
+      if (
+        new Date(expenses[i].date).getMonth() + 1 ===
+        Number(monthSelect.value)
+      ) {
         total += Number(expenses[i].amount);
       }
     }
@@ -117,76 +118,157 @@ document.addEventListener("DOMContentLoaded", function () {
   const filterMonthlyExpenses = function (month) {
     let monthExpenses = [];
     for (let i = 0; i < expenses.length; i++) {
-      const dateObj = new Date(expenses[i].date);
-      const Month = dateObj.getMonth();
+      const expMonth = new Date(expenses[i].date).getMonth() + 1;
 
-      if (Month === month) {
+      if (expMonth === month) {
         monthExpenses.push(expenses[i]);
       }
     }
     return monthExpenses;
   };
 
-  //UI functions
+  monthSelect.addEventListener("change", () => {
+    displayExpensesUI(filterMonthlyExpenses(Number(monthSelect.value)));
+    displayTotalByCategory(Number(monthSelect.value));
+    displayMonthlyTotal(getMonthlyTotal());
+  });
 
-  const displayExpensesUI = function () {
+  //******************* UI handler functions *******************/
+
+  const createExpenseElement = function (expense, expenseDiv) {
+    expenseDiv.classList.add("expense-item");
+    expenseDiv.dataset.id = expense.id;
+    expenseDiv.textContent = `Category: ${expense.category}, Amount: ${expense.amount}, Date: ${expense.date}`;
+
+    const editButton = document.createElement("button");
+    editButton.textContent = "Edit";
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "remove";
+    expenseDiv.appendChild(editButton);
+    expenseDiv.appendChild(removeButton);
+
+    editButton.addEventListener("click", () => {
+      populateFormForEditing(expense.id, expenseDiv);
+    });
+
+    removeButton.addEventListener("click", () => {
+      console.log('Removing expense with ID:', expense.id);
+      removeExpense(expense.id);
+      displayExpensesUI();
+      displayTotalByCategory(Number(monthSelect.value));
+    });
+  };
+
+
+  const displayExpensesUI = function (array = expenses) {
+
     expensesContainer.innerHTML = "";
-    expenses.forEach((exp) => {
+    array.forEach((exp) => {
       const expenseDiv = document.createElement("div");
-      expenseDiv.dataset.id = exp.id;
-      expenseDiv.classList.add("expense-item");
-      expenseDiv.textContent = `Category: ${exp.category}, Amount: ${exp.amount}, Date: ${exp.date}`;
-
-      console.log(exp.category, exp.amount, exp.date);
-
-      const editButton = document.createElement("button");
-      editButton.textContent = "Edit";
-      const removeButton = document.createElement("button");
-      removeButton.textContent = "remove";
-      expenseDiv.appendChild(editButton);
-      expenseDiv.appendChild(removeButton);
+      createExpenseElement(exp, expenseDiv);
       expensesContainer.appendChild(expenseDiv);
-
-      editButton.addEventListener("click", () => {
-        editExpense(exp.id);
-      });
-
-      removeButton.addEventListener("click", () => {
-        removeExpense(exp.id);
-      });
     });
   };
 
   const displayTotalByCategory = function (month) {
-
     const totalOfCategories = getTotalByCategory(month);
-    const categoryContainer = document.createElement('div');
-    const totalByCategoryContainer = document.createElement('div');
-    categoryContainer.classList.add('category-container');
-    totalByCategoryContainer.classList.add('total-category-container');
+    totalsSection.innerHTML = "";
 
-    totalOfCategories.forEach(item => {
-      const categoryDiv = document.createElement('div');
-      categoryDiv.textContent = item.category;
-      categoryContainer.appendChild(categoryDiv);
+    totalOfCategories.forEach((item) => {
+      const categoryColumn = document.createElement("div");
+      categoryColumn.classList.add("category-column");
 
-      const totalDiv = document.createElement('div');
-      totalDiv.textContent = item.total;
-      totalByCategoryContainer.appendChild(totalDiv);
+      const categoryItem = document.createElement("div");
+      categoryItem.classList.add("category-item");
+      categoryItem.textContent = item.category;
+      categoryColumn.appendChild(categoryItem);
 
+      const totalItem = document.createElement("div");
+      totalItem.classList.add("total-amount");
+      totalItem.textContent = item.total;
+      categoryColumn.appendChild(totalItem);
+      totalsSection.appendChild(categoryColumn);
     });
   };
 
-  // const displayMonthlyTotal = function () {};
+  const createCategorySelect = function () {
+    const categoryInputElement = document.createElement("select");
+    categories.forEach((cat) => {
+      const option = document.createElement("option");
+      option.value = cat;
+      option.textContent = cat;
+      categoryInputElement.appendChild(option);
+    });
+    return categoryInputElement;
+  };
 
-  // const clearForm = function () {};
+  const populateFormForEditing = function (id, expenseDiv) {
+    const index = expenses.findIndex((exp) => exp.id === id);
+    console.log("index:", index, "id:", id);
+    if (index !== -1) {
+      expenseDiv.innerHTML = "";
 
-  // const populateFormForEditing = function () {};
+      const categoryInputElement = createCategorySelect();
+      categoryInputElement.value = expenses[index].category;
 
+      const amountInput = document.createElement("input");
+      amountInput.value = expenses[index].amount;
+      amountInput.type = "number";
 
-  // const displayMonthlyTotal = function () {};
+      const dateInput = document.createElement("input");
+      dateInput.type = "date";
+      dateInput.value = expenses[index].date;
 
-  // const clearForm = function () {};
+      const saveButton = document.createElement("button");
+      saveButton.textContent = "Save";
+      const cancelButton = document.createElement("button");
+      cancelButton.textContent = "Cancel";
 
-  // const populateFormForEditing = function () {};
+      expenseDiv.appendChild(categoryInputElement);
+      expenseDiv.appendChild(amountInput);
+      expenseDiv.appendChild(dateInput);
+      expenseDiv.appendChild(saveButton);
+      expenseDiv.appendChild(cancelButton);
+
+      saveButton.addEventListener("click", () => {
+        editExpenseData(id, amountInput, dateInput, categoryInputElement);
+
+        expenseDiv.innerHTML = "";
+        createExpenseElement(expenses[index], expenseDiv);
+        displayTotalByCategory(Number(monthSelect.value));
+      });
+
+      cancelButton.addEventListener("click", () => {
+        expenseDiv.innerHTML = "";
+        createExpenseElement(expenses[index], expenseDiv);
+      });
+    }
+  };
+
+  const displayMonthlyTotal = function (total) {
+    monthlyTotalAmount.innerHTML = "";
+    monthlyTotalAmount.textContent = total;
+  };
+
+  const saveExpenses = function () {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  };
+
+      const loadExpenses = function () {
+    console.log("Loading expenses...");
+    const storedExpenses = localStorage.getItem("expenses");
+    if(storedExpenses) {
+      expenses = JSON.parse(storedExpenses);
+    } 
+  }
+
+  const expenseCategorySelect = createCategorySelect();
+  expenseCategorySelect.id = "category";
+  categoryContainer.appendChild(expenseCategorySelect);
+
+  loadExpenses();
+  displayExpensesUI();
+  displayTotalByCategory(Number(monthSelect.value));
+  displayMonthlyTotal(getMonthlyTotal());
+
 });
