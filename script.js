@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let total = 0;
 
       for (let i = 0; i < expenses.length; i++) {
-        const expMonth = new Date(expenses[i].date).getMonth() + 1;
+        const expMonth = new Date(expenses[i].date + "T12:00:00").getMonth() + 1;
 
         if (expMonth === month && expenses[i].category === cat) {
           total += Number(expenses[i].amount);
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let total = 0;
     for (let i = 0; i < expenses.length; i++) {
       if (
-        new Date(expenses[i].date).getMonth() + 1 ===
+        new Date(expenses[i].date + "T12:00:00").getMonth() + 1 ===
         Number(monthSelect.value)
       ) {
         total += Number(expenses[i].amount);
