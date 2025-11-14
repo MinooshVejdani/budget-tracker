@@ -28,7 +28,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label for="amount">Amount ($)</label>
-                <input type="number" id="amount" placeholder="0.00" step="0.01" required />
+                <input type="number" id="amount" placeholder="0.00" step="5" required />
               </div>
               <div class="form-group">
                 <label for="date">Date</label>
@@ -43,6 +43,7 @@
 
         <!-- Monthly Overview -->
         <div class="card monthly-overview">
+          <h2 class="card-title">Monthly Total</h2>
           <div class="month-selector-wrapper">
             <label for="month-select">Viewing Month</label>
             <select id="month-select" class="month-select">
@@ -60,9 +61,7 @@
               <option value="12">December</option>
             </select>
           </div>
-
           <div class="monthly-total-card">
-            <div class="total-label">Monthly Total</div>
             <div class="total-amount-display">$<span id="monthly-total-amount">0.00</span></div>
           </div>
         </div>
