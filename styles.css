@@ -222,6 +222,8 @@ body {
   cursor: pointer;
   background: white;
   transition: all 0.2s;
+  height: 38px;
+  box-sizing: border-box;
 }
 
 .month-select:focus {
@@ -453,4 +455,23 @@ body {
   .expense-buttons button {
     flex: 1;
   }
+}
+
+/* Footer */
+.footer {
+  margin-top: 2rem;
+  padding: 1.5rem 0;
+  text-align: center;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.footer p {
+  margin: 0.25rem 0;
+  opacity: 0.9;
+}
+
+.footer-year {
+  font-size: 0.75rem;
+  opacity: 0.7;
 }
