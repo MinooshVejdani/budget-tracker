@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const currentMonth = new Date().getMonth() + 1;
   monthSelect.value = currentMonth.toString();
+  
+  // Set today's date as default
+  date.valueAsDate = new Date();
 
   const formData = document.querySelector(".form-data");
 
@@ -22,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     displayTotalByCategory(Number(monthSelect.value));
     displayMonthlyTotal(getMonthlyTotal());
     formData.reset();
+    date.valueAsDate = new Date(); // Reset date to today after form submission
   });
 
   let categories = [
@@ -33,8 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
     "Travel",
     "Gifts",
     "Commute",
-    "utilities",
-    "mobile & data",
+    "Utilities",
+    "Mobile & Data",
     "Restaurant",
   ];
 
@@ -134,14 +138,42 @@ document.addEventListener("DOMContentLoaded", function () {
   const createExpenseElement = function (expense, expenseDiv) {
     expenseDiv.classList.add("expense-item");
     expenseDiv.dataset.id = expense.id;
-    expenseDiv.textContent = `Category: ${expense.category}, Amount: ${expense.amount}, Date: ${expense.date}`;
-
+    
+    // Create expense info container
+    const expenseInfo = document.createElement("div");
+    expenseInfo.classList.add("expense-info");
+    
+    // Format the amount with 2 decimal places
+    const formattedAmount = parseFloat(expense.amount).toFixed(2);
+    
+    // Format the date
+    const dateObj = new Date(expense.date + "T12:00:00");
+    const formattedDate = dateObj.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+    
+    expenseInfo.innerHTML = `
+      <strong>${expense.category}</strong> - $${formattedAmount}
+      <br>
+      <small style="color: var(--text-secondary);">${formattedDate}</small>
+    `;
+    
+    // Create buttons container
+    const buttonsDiv = document.createElement("div");
+    buttonsDiv.classList.add("expense-buttons");
+    
     const editButton = document.createElement("button");
     editButton.textContent = "Edit";
     const removeButton = document.createElement("button");
-    removeButton.textContent = "remove";
-    expenseDiv.appendChild(editButton);
-    expenseDiv.appendChild(removeButton);
+    removeButton.textContent = "Remove";
+    
+    buttonsDiv.appendChild(editButton);
+    buttonsDiv.appendChild(removeButton);
+    
+    expenseDiv.appendChild(expenseInfo);
+    expenseDiv.appendChild(buttonsDiv);
 
     editButton.addEventListener("click", () => {
       populateFormForEditing(expense.id, expenseDiv);
@@ -169,19 +201,22 @@ document.addEventListener("DOMContentLoaded", function () {
     totalsSection.innerHTML = "";
 
     totalOfCategories.forEach((item) => {
-      const categoryColumn = document.createElement("div");
-      categoryColumn.classList.add("category-column");
+      // Only show categories with expenses
+      if (item.total > 0) {
+        const categoryColumn = document.createElement("div");
+        categoryColumn.classList.add("category-column");
 
-      const categoryItem = document.createElement("div");
-      categoryItem.classList.add("category-item");
-      categoryItem.textContent = item.category;
-      categoryColumn.appendChild(categoryItem);
+        const categoryItem = document.createElement("div");
+        categoryItem.classList.add("category-item");
+        categoryItem.textContent = item.category;
+        categoryColumn.appendChild(categoryItem);
 
-      const totalItem = document.createElement("div");
-      totalItem.classList.add("total-amount");
-      totalItem.textContent = item.total;
-      categoryColumn.appendChild(totalItem);
-      totalsSection.appendChild(categoryColumn);
+        const totalItem = document.createElement("div");
+        totalItem.classList.add("total-amount");
+        totalItem.textContent = item.total.toFixed(2);
+        categoryColumn.appendChild(totalItem);
+        totalsSection.appendChild(categoryColumn);
+      }
     });
   };
 
@@ -241,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const displayMonthlyTotal = function (total) {
     monthlyTotalAmount.innerHTML = "";
-    monthlyTotalAmount.textContent = total;
+    monthlyTotalAmount.textContent = total.toFixed(2);
   };
 
   const saveExpenses = function () {

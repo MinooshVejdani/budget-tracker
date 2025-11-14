@@ -3,39 +3,83 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Budget Tracker</title>
+    <title>Budget Tracker</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <h1>My Budget Tracker</h1>
-    <form class="form-data">
-      <div id = 'category-container'></div>
-      <input type="number" id="amount" placeholder="amount" required />
-      <input type="date" id="date" required />
-      <button type="submit">Add Expense</button>
-    </form>
+    <div class="container">
+      <header class="header">
+        <h1>💰 Budget Tracker</h1>
+        <p class="subtitle">Track your expenses effortlessly</p>
+      </header>
 
-    <select id="month-select" class="month">
-      <option value="1">January</option>
-      <option value="2">February</option>
-      <option value="3">March</option>
-      <option value="4">April</option>
-      <option value="5">May</option>
-      <option value="6">June</option>
-      <option value="7">July</option>
-      <option value="8">August</option>
-      <option value="9">September</option>
-      <option value="10">October</option>
-      <option value="11">November</option>
-      <option value="12">December</option>
-    </select>
-    <div class="totals-section"></div>
+      <div class="main-content">
+        <!-- Add Expense Card -->
+        <div class="card add-expense-card">
+          <h2 class="card-title">Add New Expense</h2>
+          <form class="form-data">
+            <div class="form-group">
+              <label for="category">Category</label>
+              <div id="category-container"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="amount">Amount ($)</label>
+                <input type="number" id="amount" placeholder="0.00" step="0.01" required />
+              </div>
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" required />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <span>+</span> Add Expense
+            </button>
+          </form>
+        </div>
 
-    <div class="monthly-total">
-      Montly Total: <span id="monthly-total-amount">0</span>
+        <!-- Monthly Overview -->
+        <div class="card monthly-overview">
+          <div class="month-selector-wrapper">
+            <label for="month-select">Viewing Month</label>
+            <select id="month-select" class="month-select">
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+          </div>
+
+          <div class="monthly-total-card">
+            <div class="total-label">Monthly Total</div>
+            <div class="total-amount-display">$<span id="monthly-total-amount">0.00</span></div>
+          </div>
+        </div>
+
+        <!-- Category Breakdown -->
+        <div class="card category-breakdown-card">
+          <h2 class="card-title">Category Breakdown</h2>
+          <div class="totals-section"></div>
+        </div>
+
+        <!-- Expenses List -->
+        <div class="card expenses-card">
+          <h2 class="card-title">Recent Expenses</h2>
+          <section class="expenses-container"></section>
+        </div>
+      </div>
     </div>
-
-    <section class="expenses-container"></section>
 
     <script src="script.js"></script>
   </body>
