@@ -248,16 +248,26 @@ document.addEventListener("DOMContentLoaded", function () {
       dateInput.type = "date";
       dateInput.value = expenses[index].date;
 
+      // Create inputs container
+      const inputsDiv = document.createElement("div");
+      inputsDiv.classList.add("expense-edit-inputs");
+      inputsDiv.appendChild(categoryInputElement);
+      inputsDiv.appendChild(amountInput);
+      inputsDiv.appendChild(dateInput);
+
       const saveButton = document.createElement("button");
       saveButton.textContent = "Save";
       const cancelButton = document.createElement("button");
       cancelButton.textContent = "Cancel";
 
-      expenseDiv.appendChild(categoryInputElement);
-      expenseDiv.appendChild(amountInput);
-      expenseDiv.appendChild(dateInput);
-      expenseDiv.appendChild(saveButton);
-      expenseDiv.appendChild(cancelButton);
+      // Create buttons container
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.classList.add("expense-buttons");
+      buttonsDiv.appendChild(saveButton);
+      buttonsDiv.appendChild(cancelButton);
+
+      expenseDiv.appendChild(inputsDiv);
+      expenseDiv.appendChild(buttonsDiv);
 
       saveButton.addEventListener("click", () => {
         editExpenseData(id, amountInput, dateInput, categoryInputElement);
