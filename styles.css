@@ -255,12 +255,14 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
   gap: 0.65rem;
+  min-height: 80px;
 }
 
 .totals-section:empty {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 80px;
 }
 
 .category-column {
@@ -303,9 +305,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-height: 80px;
   max-height: 400px;
   overflow-y: auto;
   padding-right: 0.5rem;
+}
+
+.expenses-container:empty {
+  max-height: none;
+  min-height: 80px;
+  justify-content: center;
+  align-items: center;
 }
 
 .expenses-container::-webkit-scrollbar {
@@ -419,7 +429,6 @@ body {
   content: "No expenses yet. Add your first expense above! 📝";
   display: block;
   text-align: center;
-  padding: 2rem 1rem;
   color: var(--text-secondary);
   font-style: italic;
   font-size: 0.875rem;
@@ -429,7 +438,6 @@ body {
   content: "No expenses for this month yet!";
   display: block;
   text-align: center;
-  padding: 1.5rem 1rem;
   color: var(--text-secondary);
   font-style: italic;
   font-size: 0.875rem;
